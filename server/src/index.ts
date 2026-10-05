@@ -5,7 +5,7 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import { env, emailEnabled, cloudinaryEnabled } from "./config/env";
 import { connectDb, disconnectDb } from "./config/db";
-import { seedDatabase } from "./seed/index";
+import { bootstrapDatabase } from "./bootstrap/index";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { UPLOAD_ROOT } from "./utils/localUpload";
 import { resolveBrandLogoPath } from "./brand/logo";
@@ -96,7 +96,7 @@ app.use(errorHandler);
 
 async function start() {
   await connectDb();
-  await seedDatabase();
+  await bootstrapDatabase();
 
   const server = app.listen(env.port, () => {
     console.log(`BBD PROFOLIO API running on http://localhost:${env.port} (${env.nodeEnv})`);

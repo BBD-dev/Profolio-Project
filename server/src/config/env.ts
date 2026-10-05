@@ -43,10 +43,6 @@ export const env = {
   },
   adminEmail: process.env.ADMIN_EMAIL,
   adminPassword: process.env.ADMIN_PASSWORD,
-  demoEmail: process.env.DEMO_EMAIL,
-  demoPassword: process.env.DEMO_PASSWORD,
-  /** Demo dataset only loads outside production unless RUN_SEED=true. */
-  seedDemo: process.env.SEED_DEMO === "true" && (!isProduction || process.env.RUN_SEED === "true"),
   corsOrigins,
   /** Public base URL of this API (used to build absolute URLs for local uploads). */
   publicApiUrl: (process.env.PUBLIC_API_URL || "").replace(/\/$/, ""),

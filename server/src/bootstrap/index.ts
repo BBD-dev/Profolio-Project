@@ -1,14 +1,10 @@
 import bcrypt from "bcryptjs";
 import { connectDb, disconnectDb } from "../config/db";
 import { env } from "../config/env";
-import { syncAllGraduateProjectIds } from "../utils/syncProjects";
 import { User } from "../models/User";
 import { Category } from "../models/Category";
 import { HomepageSection } from "../models/HomepageSection";
-import { Project } from "../models/Project";
 import { Settings } from "../models/Settings";
-import { seedDemoData } from "./demoData";
-import { avatarFor, SEED_IMAGES } from "./seedMedia";
 import { DEFAULT_SETTINGS, ensureSettingsDefaults } from "../utils/settingsDefaults";
 import { cloudinaryEnabled, uploadBuffer } from "../config/cloudinary";
 import { readBrandLogo } from "../brand/logo";
@@ -31,7 +27,7 @@ const DEFAULT_HOMEPAGE = [
 
 const STOCK_ADMIN_AVATAR = "images.unsplash.com/photo-1507003211169";
 
-async function adminAvatarUrl(email: string): Promise<string> {
+async function adminAvatarUrl(): Promise<string | undefined> {
   const logo = readBrandLogo();
   if (logo && cloudinaryEnabled) {
     const uploaded = await uploadBuffer(logo.buffer, "avatars", { filename: "bbd-admin" });
@@ -45,7 +41,7 @@ async function adminAvatarUrl(email: string): Promise<string> {
   } catch {
     /* fall through */
   }
-  return avatarFor(email);
+  return undefined;
 }
 
 function shouldReplaceAdminAvatar(avatar?: string | null): boolean {
@@ -59,20 +55,21 @@ function shouldReplaceAdminAvatar(avatar?: string | null): boolean {
   }
 }
 
-export async function seedDatabase(options?: { demo?: boolean; force?: boolean }): Promise<void> {
+/** Empty-database setup only: defaults + admin from env. No demo users or sample content. */
+export async function bootstrapDatabase(): Promise<void> {
   if ((await Category.countDocuments()) === 0) {
     await Category.insertMany(DEFAULT_CATEGORIES);
-    console.log("Seeded categories");
+    console.log("Bootstrap: default categories");
   }
 
   if ((await HomepageSection.countDocuments()) === 0) {
     await HomepageSection.insertMany(DEFAULT_HOMEPAGE);
-    console.log("Seeded homepage sections");
+    console.log("Bootstrap: homepage sections");
   }
 
   if ((await Settings.countDocuments()) === 0) {
     await Settings.create(DEFAULT_SETTINGS);
-    console.log("Seeded settings");
+    console.log("Bootstrap: platform settings");
   } else {
     await ensureSettingsDefaults();
   }
@@ -80,86 +77,30 @@ export async function seedDatabase(options?: { demo?: boolean; force?: boolean }
   if (env.adminEmail && env.adminPassword) {
     const email = env.adminEmail.toLowerCase();
     const existing = await User.findOne({ email });
+    const avatar = await adminAvatarUrl();
     if (!existing) {
       await User.create({
         email,
         passwordHash: await bcrypt.hash(env.adminPassword, 12),
         fullName: "BBD Select Admin",
-        avatar: await adminAvatarUrl(email),
+        avatar,
         status: "approved",
         role: "admin",
         graduateStatus: "active",
       });
-      console.log("Seeded admin account");
-    } else if (shouldReplaceAdminAvatar(existing.avatar)) {
-      await User.updateOne({ _id: existing._id }, { $set: { avatar: await adminAvatarUrl(email) } });
-      console.log("Set admin profile avatar");
+      console.log("Bootstrap: admin account");
+    } else if (avatar && shouldReplaceAdminAvatar(existing.avatar)) {
+      await User.updateOne({ _id: existing._id }, { $set: { avatar } });
+      console.log("Bootstrap: admin avatar");
     }
-  }
-
-  if (env.demoEmail && env.demoPassword) {
-    const email = env.demoEmail.toLowerCase();
-    if (!(await User.findOne({ email }))) {
-      const demo = await User.create({
-        email,
-        passwordHash: await bcrypt.hash(env.demoPassword, 12),
-        fullName: "Naledi Khumalo",
-        headline: "Full-Stack Developer & UI Engineer",
-        specialization: "Apps",
-        about: "BBD Select graduate specialising in production React Native apps.",
-        skills: ["React Native", "TypeScript", "Node.js", "Figma"],
-        avatar: avatarFor(email),
-        cover: SEED_IMAGES.mobile1,
-        availableForWork: true,
-        featured: true,
-        status: "approved",
-        role: "user",
-        graduateStatus: "active",
-        links: {
-          linkedin: "https://linkedin.com/in/naledi",
-          github: "https://github.com/naledi",
-          website: "https://naledi.dev",
-        },
-        approvedAt: new Date(),
-      });
-
-      if ((await Project.countDocuments()) === 0) {
-        await Project.create({
-          title: "Pulse Health",
-          name: "Pulse Health",
-          shortDescription: "Telehealth companion for African clinics",
-          description: "A production-ready telehealth platform built with React Native.",
-          category: "Apps",
-          type: "Mobile App",
-          cover: SEED_IMAGES.mobile2,
-          logo: SEED_IMAGES.mobile1,
-          gallery: [SEED_IMAGES.mobile2, SEED_IMAGES.mobile1],
-          technologies: ["React Native", "TypeScript", "Node.js"],
-          ownerId: demo._id,
-          ownerName: demo.fullName,
-          graduateIds: [demo._id],
-          status: "published",
-          featured: true,
-        });
-        console.log("Seeded demo project");
-      }
-
-      console.log("Seeded demo graduate");
-    }
-  }
-
-  const runDemo = options?.demo || env.seedDemo;
-  if (runDemo) {
-    await seedDemoData(options?.force || process.argv.includes("--force"));
-    await syncAllGraduateProjectIds();
+  } else if (env.isProduction) {
+    console.warn("[bootstrap] Set ADMIN_EMAIL and ADMIN_PASSWORD in production");
   }
 }
 
 if (require.main === module) {
-  const demo = process.argv.includes("--demo");
-  const force = process.argv.includes("--force");
   connectDb()
-    .then(() => seedDatabase({ demo: demo || process.env.SEED_DEMO === "true", force }))
+    .then(() => bootstrapDatabase())
     .then(() => disconnectDb())
     .then(() => process.exit(0))
     .catch((err) => {

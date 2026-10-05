@@ -103,15 +103,23 @@ docker compose ps
 curl -s http://127.0.0.1/api/
 ```
 
+Optional Expo **web** smoke test (port 8080):
+
+```bash
+docker compose --profile app-test up -d --build
+```
+
+When you ship iOS/Android builds, stop the test web container and remove `:8080` from `CORS_ORIGINS` / `PUBLIC_APP_URL`.
+
 ### Required `api.env` fields
 
 Copy values from local `server/.env` where needed. **Do not commit this file.**
 
 - `JWT_SECRET` — 32+ random chars
 - `ADMIN_EMAIL` / `ADMIN_PASSWORD`
-- `PUBLIC_API_URL=http://207.154.248.90`
-- `PUBLIC_APP_URL=http://207.154.248.90:8080`
-- `CORS_ORIGINS=http://207.154.248.90,http://207.154.248.90:8080`
+- `PUBLIC_API_URL=http://YOUR_VPS_IP`
+- `PUBLIC_APP_URL=http://YOUR_VPS_IP:8080` (only while `app-test` profile runs)
+- `CORS_ORIGINS=http://YOUR_VPS_IP,http://YOUR_VPS_IP:8080`
 - `RESEND_API_KEY` / `EMAIL_FROM` — same as local if you want approval emails
 - `CLOUDINARY_*` — optional; otherwise files stay on the VPS disk volume
 - Default `MONGO_URL=mongodb://mongo:27017` is a **new empty database** on the VPS. Paste your Atlas URI only if you want the same data as local.

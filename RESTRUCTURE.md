@@ -251,11 +251,6 @@ cd front && npm install && npm run dev
 
 ---
 
-## Default seed accounts
+## Production bootstrap
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | `admin@bbdselect.com` | `BBDadmin2026!` |
-| Demo graduate | `grad@bbdselect.com` | `Password123!` |
-
-Created automatically on server startup when env vars are set.
+On first API boot (empty database): default categories, homepage sections, platform settings, and one **admin** user from `ADMIN_EMAIL` / `ADMIN_PASSWORD`. No demo graduates or sample projects.

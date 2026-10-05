@@ -1,3 +1,7 @@
+# Production VPS:  docker compose up -d --build
+# + mobile web test: docker compose --profile app-test up -d --build
+# Drop app later:    remove profile and mobile-web service; set PUBLIC_APP_URL to store/deep link.
+
 services:
   mongo:
     image: mongo:7
@@ -55,6 +59,7 @@ services:
       - profolio
 
   mobile-web:
+    profiles: ["app-test"]
     build:
       context: ./app
       dockerfile: Dockerfile.web

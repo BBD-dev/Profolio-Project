@@ -77,8 +77,9 @@ nano api.env   # fill JWT, Cloudinary, admin password, YOUR_VPS_IP in CORS_ORIGI
 | `DB_NAME` | `bbd-profolio` |
 | `JWT_SECRET` | Long random string |
 | `CORS_ORIGINS` | `http://YOUR_VPS_IP` |
-| `SEED_DEMO` | `false` for production |
 | `ADMIN_PASSWORD` | Strong password |
+| `PUBLIC_API_URL` | `http://YOUR_VPS_IP` (same host as dashboard; `/api` is proxied) |
+| `PUBLIC_APP_URL` | `http://YOUR_VPS_IP:8080` only while app-test profile runs |
 
 You do **not** need MongoDB Atlas when using this setup. Data is stored in a Docker volume (`mongo_data`) on the VPS.
 
@@ -98,31 +99,51 @@ docker compose build web
 docker compose up -d
 ```
 
-Or in one command (needs swap or 2 GB+ droplet):
+Production stack (API + dashboard only):
 
 ```bash
 cd /opt/profolio
 docker compose up -d --build
 ```
 
+**Temporary** Expo web build for QA (port **8080**):
+
+```bash
+docker compose --profile app-test up -d --build
+```
+
 Check status:
 
 ```bash
 docker compose ps
-docker compose logs -f
+docker compose logs -f api
 ```
 
-You should see three services: **mongo**, **api**, **web**.
+You should see **mongo**, **api**, **web**. With `app-test`: also **mobile-web**.
 
 ## 6. Verify
 
 - Dashboard: `http://YOUR_VPS_IP`  
-- API health: `http://YOUR_VPS_IP/api/` → should return JSON `{ "status": "ok", ... }`  
-- Login: admin email + password from `.env`
+- API health: `http://YOUR_VPS_IP/api/` → JSON `{ "status": "ok", ... }`  
+- Login: `ADMIN_EMAIL` + `ADMIN_PASSWORD` from `api.env`  
+- App web test (if profile enabled): `http://YOUR_VPS_IP:8080`
 
-## 7. Mobile app (later)
+No demo graduates or sample projects are seeded — only default categories, homepage sections, settings, and the admin user.
 
-Point the app to the same host:
+## 7. Mobile app
+
+**While testing on the VPS:** use `http://YOUR_VPS_IP:8080` (same-origin `/api` via nginx).
+
+**After store builds:** remove the test web app from the VPS:
+
+```bash
+docker compose --profile app-test down
+docker compose rm -f mobile-web 2>/dev/null || true
+```
+
+Update `api.env`: set `PUBLIC_APP_URL` to your App Store / Play listing or custom scheme, and trim `CORS_ORIGINS` to drop `:8080`.
+
+Native builds (EAS):
 
 ```env
 EXPO_PUBLIC_BACKEND_URL=http://YOUR_VPS_IP

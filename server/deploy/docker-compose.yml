@@ -1,3 +1,5 @@
+# Same as repo root docker-compose.yml — run from /opt/profolio after monorepo clone.
+
 services:
   mongo:
     image: mongo:7
@@ -55,6 +57,7 @@ services:
       - profolio
 
   mobile-web:
+    profiles: ["app-test"]
     build:
       context: ./app
       dockerfile: Dockerfile.web
