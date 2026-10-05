@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 210 20% 98%;
+        --foreground: 226 66% 11%;
+        --card: 0 0% 100%;
+        --card-foreground: 226 66% 11%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 226 66% 11%;
+        --primary: 226 66% 11%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 226 20% 94%;
+        --secondary-foreground: 226 66% 11%;
+        --muted: 226 20% 95%;
+        --muted-foreground: 226 16% 46%;
+        --accent: 65 68% 50%;
+        --accent-foreground: 226 66% 11%;
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+        --success: 152 60% 40%;
+        --success-foreground: 0 0% 100%;
+        --warning: 38 92% 50%;
+        --warning-foreground: 226 66% 11%;
+        --border: 226 20% 91%;
+        --input: 226 20% 91%;
+        --ring: 226 66% 11%;
+        --chart-1: 226 66% 20%;
+        --chart-2: 65 68% 50%;
+        --chart-3: 199 89% 48%;
+        --chart-4: 262 83% 58%;
+        --chart-5: 22 92% 55%;
+        --radius: 0.75rem;
+    }
+    .dark {
+        --background: 226 66% 7%;
+        --foreground: 210 20% 98%;
+        --card: 226 54% 10%;
+        --card-foreground: 210 20% 98%;
+        --popover: 226 54% 10%;
+        --popover-foreground: 210 20% 98%;
+        --primary: 65 68% 50%;
+        --primary-foreground: 226 66% 11%;
+        --secondary: 226 40% 16%;
+        --secondary-foreground: 210 20% 98%;
+        --muted: 226 40% 16%;
+        --muted-foreground: 210 16% 66%;
+        --accent: 65 68% 50%;
+        --accent-foreground: 226 66% 11%;
+        --destructive: 0 62% 46%;
+        --destructive-foreground: 0 0% 100%;
+        --success: 152 55% 45%;
+        --success-foreground: 0 0% 100%;
+        --warning: 38 92% 55%;
+        --warning-foreground: 226 66% 11%;
+        --border: 226 40% 18%;
+        --input: 226 40% 18%;
+        --ring: 65 68% 50%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        margin: 0;
+        @apply bg-background text-foreground font-sans antialiased;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    h1, h2, h3, h4, h5 {
+        @apply font-heading;
+    }
+    input:focus,
+    input:focus-visible,
+    textarea:focus,
+    textarea:focus-visible,
+    select:focus,
+    select:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+    /* Hide browser default password reveal — we use a custom toggle */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+    input[type="password"]::-webkit-textfield-decoration-container {
+        display: none;
+    }
+    input[type="password"]::-webkit-credentials-auto-fill-button,
+    input[type="password"]::-webkit-strong-password-auto-fill-button {
+        display: none !important;
+        visibility: hidden;
+        pointer-events: none;
+    }
+    ::selection {
+        background: hsl(var(--accent));
+        color: hsl(var(--accent-foreground));
+    }
+}
+
+@layer components {
+    .glass {
+        @apply bg-card/70 backdrop-blur-xl;
+    }
+    .stat-shimmer::after {
+        content: '';
+        @apply absolute inset-0 -translate-x-full;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+        animation: shimmer 1.6s infinite;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* Refined scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.4); background-clip: padding-box; }
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+@layer base {
+    [data-debug-wrapper="true"] {
+        display: contents !important;
+    }
+    [data-debug-wrapper="true"] > * {
+        margin-left: inherit; margin-right: inherit; margin-top: inherit; margin-bottom: inherit;
+        padding-left: inherit; padding-right: inherit; padding-top: inherit; padding-bottom: inherit;
+        column-gap: inherit; row-gap: inherit; gap: inherit;
+        border-left-width: inherit; border-right-width: inherit; border-top-width: inherit; border-bottom-width: inherit;
+        border-left-style: inherit; border-right-style: inherit; border-top-style: inherit; border-bottom-style: inherit;
+        border-left-color: inherit; border-right-color: inherit; border-top-color: inherit; border-bottom-color: inherit;
+    }
+}

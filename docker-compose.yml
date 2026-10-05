@@ -1,0 +1,78 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - profolio
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - api.env
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+    volumes:
+      - upload_data:/app/uploads
+    expose:
+      - "5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:5000/api/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+    networks:
+      - profolio
+
+  web:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ""
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - profolio
+
+  mobile-web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.web
+      args:
+        EXPO_PUBLIC_BACKEND_URL: ""
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - profolio
+
+volumes:
+  mongo_data:
+  upload_data:
+
+networks:
+  profolio:
+    driver: bridge

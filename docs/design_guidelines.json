@@ -1,0 +1,220 @@
+{
+  "app_name": "BBD PROFOLIO",
+  "personality": "1 iOS-Native Clean with Premium SaaS Structuring",
+  "personality_one_liner": "A dense, precise, and highly tactile project showcase blending Apple HIG's clarity with Linear's technical elegance.",
+  "color": {
+    "surface": "#FFFFFF",
+    "onSurface": "#0A1330",
+    "surfaceSecondary": "#F4F5F8",
+    "onSurfaceSecondary": "#3A4565",
+    "surfaceTertiary": "#E2E6EF",
+    "onSurfaceTertiary": "#0A1330",
+    "surfaceInverse": "#0A1330",
+    "onSurfaceInverse": "#FFFFFF",
+    "brand": "#0A1330",
+    "brandPrimary": "#C8D62B",
+    "onBrandPrimary": "#0A1330",
+    "brandSecondary": "#0A1330",
+    "onBrandSecondary": "#FFFFFF",
+    "brandTertiary": "#162244",
+    "onBrandTertiary": "#FFFFFF",
+    "success": "#2D9F6D",
+    "onSuccess": "#FFFFFF",
+    "warning": "#E89B15",
+    "onWarning": "#FFFFFF",
+    "error": "#E04848",
+    "onError": "#FFFFFF",
+    "info": "#0A1330",
+    "onInfo": "#FFFFFF",
+    "border": "#E2E6EF",
+    "borderStrong": "#C5CBDD",
+    "divider": "#E2E6EF"
+  },
+  "color_dark": {
+    "surface": "#050914",
+    "onSurface": "#FFFFFF",
+    "surfaceSecondary": "#0A1330",
+    "onSurfaceSecondary": "#9BA6C7",
+    "surfaceTertiary": "#162244",
+    "onSurfaceTertiary": "#FFFFFF",
+    "surfaceInverse": "#FFFFFF",
+    "onSurfaceInverse": "#0A1330",
+    "brand": "#0A1330",
+    "brandPrimary": "#C8D62B",
+    "onBrandPrimary": "#050914",
+    "brandSecondary": "#C8D62B",
+    "onBrandSecondary": "#050914",
+    "brandTertiary": "#162244",
+    "onBrandTertiary": "#FFFFFF",
+    "success": "#2D9F6D",
+    "onSuccess": "#FFFFFF",
+    "warning": "#E89B15",
+    "onWarning": "#050914",
+    "error": "#E04848",
+    "onError": "#FFFFFF",
+    "info": "#C8D62B",
+    "onInfo": "#050914",
+    "border": "#162244",
+    "borderStrong": "#3A4565",
+    "divider": "#162244"
+  },
+  "typography": {
+    "displayFontFamily": "Geist",
+    "textFontFamily": "Geist",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Generous vertical rhythm mimicking Notion/Linear. Tightly grouped metadata inside cards with larger padding around the structural blocks.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 6,
+    "md": 12,
+    "lg": 16,
+    "pill": 999
+  },
+  "shadow_tier": "1",
+  "navigation": "bottom_tabs",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": "true",
+    "do's": [
+      "Use frosted glass on the sticky tab bar and sticky screen headers when content scrolls behind.",
+      "Use glass over the dark hero background to float the project CTA.",
+      "Apply glass blur to bottom-sheet handles/headers."
+    ],
+    "dont's": [
+      "Avoid heavy blur that obscures text; always pair with a translucent tinted base (>= 70% opacity of surface).",
+      "Do not use glass on simple list items or tech tags."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Splash & Onboarding",
+      "purpose": "Introduce the platform with the blue rounded-square 'P' mark and clear premium SaaS framing.",
+      "states": {
+        "loading": "Centered logo pulsing",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "Full-bleed abstract background with a gradient scrim ensuring high contrast. Centered minimal typography. Primary CTA pinned at the bottom."
+    },
+    {
+      "name": "Home",
+      "purpose": "Discover Projects & Meet Talent via premium horizontal-scroll carousels.",
+      "states": {
+        "loading": "Skeleton cards mimicking 12px rounded Linear-style blocks.",
+        "empty": "N/A",
+        "error": "Error message with 'Retry' CTA."
+      },
+      "layout": "Hero banner with dark tech-abstract background, gradient scrim (top->bottom), headline 'Discover Real Projects', subtitle, and two buttons. Below hero: Horizontal scroll sections ('Built by BBD Select Students', Featured Projects, Latest Projects, Featured Graduates). Cards use 1px hairline border, subtle shadow."
+    },
+    {
+      "name": "Projects",
+      "purpose": "Extensive project directory with instant search and multi-select filtering.",
+      "states": {
+        "loading": "Staggered skeleton grid.",
+        "empty": "Illustration of an empty folder + 'No projects match your filters.'",
+        "error": "Error fetching projects."
+      },
+      "layout": "Sticky header with search bar and horizontal scrolling filter chips (Apps, Websites, Graphic Design, etc.). Grid/list of project cards below. Cards contain cover image, small logo overlapping edge, project title, and compact tech tags."
+    },
+    {
+      "name": "Project Details",
+      "purpose": "Deep dive into a project with gallery and interactive demo links.",
+      "states": {
+        "loading": "Spinner centered.",
+        "empty": "Project not found.",
+        "error": "Failed to load project details."
+      },
+      "layout": "Edge-to-edge cover image with vertical gradient scrim at bottom. Logo floats over the seam. Content uses Notion-style block rhythm: Description, Tech Stack chips, Image Gallery carousel, floating CTA for 'Live Demo / Download'. Development team list with mini avatars."
+    },
+    {
+      "name": "Graduates",
+      "purpose": "Directory of verified graduates available for work or networking.",
+      "states": {
+        "loading": "List of skeleton avatars and text blocks.",
+        "empty": "No graduates found.",
+        "error": "Failed to load graduates."
+      },
+      "layout": "Sticky search bar. List of graduate profile cards. Each card has an avatar (photo), name, professional headline, and a prominent 'Available for Work' badge (lime green). Secondary CTA 'View Profile'."
+    },
+    {
+      "name": "Graduate Profile (Editable & View)",
+      "purpose": "Showcase a graduate's skills, links, resume, and owned projects.",
+      "states": {
+        "loading": "Profile skeleton loading.",
+        "empty": "Guest state: 'No Graduate Profile Found' with 'Explore BBD Select' and 'Create Profile' buttons.",
+        "error": "Failed to load profile."
+      },
+      "layout": "Cover banner image, overlapping profile image. Name and headline. About text, list of skill chips, experience, social/github links, and resume download. Section below lists their specific projects. Editable state adds subtle 'Edit' icons to sections."
+    },
+    {
+      "name": "Settings",
+      "purpose": "Manage app preferences like dark mode, language, terms, and logout.",
+      "states": {
+        "loading": "N/A",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "Standard iOS HIG grouped list format with 1px dividers, clear iconography per row, and toggles for preferences."
+    }
+  ],
+  "images": {
+    "hero_background": {
+      "url": "https://images.pexels.com/photos/7562087/pexels-photo-7562087.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "dark": "https://images.pexels.com/photos/7562087/pexels-photo-7562087.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Abstract blue futuristic tech circuit pattern"
+    },
+    "project_cover_placeholder": {
+      "url": "https://images.pexels.com/photos/35184836/pexels-photo-35184836.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "dark": "https://images.pexels.com/photos/35184836/pexels-photo-35184836.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Clean modern web and mobile dashboard design on a laptop screen"
+    },
+    "graduate_avatar_placeholder": {
+      "url": "https://images.unsplash.com/photo-1767175473698-859bc73e8e64?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBzb2Z0d2FyZSUyMGRldmVsb3BlciUyMHBvcnRyYWl0JTIwbmV1dHJhbCUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzg0MzQzMzE5fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Professional portrait of a software developer smiling"
+    }
+  },
+  "haptics": {
+    "primary_button_press": "impactLight",
+    "tab_change": "selection",
+    "filter_chip_toggle": "impactLight",
+    "pull_to_refresh": "impactMedium",
+    "project_card_press": "impactLight"
+  },
+  "instructions_to_main_agent": [
+    "Follow the 'iOS-Native Clean with Premium SaaS Structuring' guideline. This is essentially an Apple HIG foundation (large tap targets, readable scale, clear hierarchy) fused with a Linear/Notion visual language (12px/16px radii, 1px subtle borders, precise typography).",
+    "Do not use colorful generic UI or heavy gradients. Stick strictly to the Navy/Lime palette. The brand navy (#0A1330) acts as the primary anchor, and Lime (#C8D62B) is used selectively for primary actions, active states, and 'Available for Work' badges.",
+    "Implement a strict Light Mode and Dark Mode as instructed. In dark mode, shift the background to near-black (#050914) and use the brand Navy (#0A1330) as elevated surface cards.",
+    "For the hero banner and any image-based background, you MUST implement the gradient scrim pattern (Layer 0 image -> Layer 1 top-to-bottom transparent to >= 70% surfaceInverse linear gradient -> Layer 2 text). Zero tolerance for illegible text on images.",
+    "Project cards and profile cards should feel like structured 'blocks' (1px hairline borders, subtle or zero shadows, clear internal spacing). Avoid rounded bubble-like designs.",
+    "For horizontal carousels on the Home screen, ensure they don't break the layout. Cards should have consistent width and snap to edges natively.",
+    "Keep typography tight and disciplined. Use Geist for all text to achieve that precise, technical SaaS feel. Cap font weights at 500.",
+    "Do NOT alter the 'blue rounded-square P mark' logo. It must be used exactly as is for branding, auth, and splash screens."
+  ]
+}

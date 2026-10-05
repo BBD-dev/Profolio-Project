@@ -1,0 +1,26 @@
+node_modules/
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.local
+*.log
+.DS_Store
+Thumbs.db
+
+# Expo / React Native
+app/.expo/
+app/dist/
+app/.metro-cache/
+app/web-build/
+
+# Dashboard build
+front/build/
+
+# Server build
+server/dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
