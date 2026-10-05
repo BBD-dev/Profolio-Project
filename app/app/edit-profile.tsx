@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppText, Avatar, BusyOverlay, Button, Input } from "@/src/components";
 import { EditProfileSection } from "@/src/components/edit/EditProfileSection";
+import { RemoveAssetButton } from "@/src/components/edit/RemoveAssetButton";
 import { SocialLinkField } from "@/src/components/edit/SocialLinkField";
 import { useToast } from "@/src/hooks/useToast";
 import { useAuth } from "@/src/providers/AuthContext";
@@ -61,6 +62,18 @@ const LINK_META = {
 function isStoredUri(uri?: string) {
   if (!uri) return false;
   return uri.startsWith("http://") || uri.startsWith("https://") || uri.startsWith("/api/");
+}
+
+function confirmRemove(title: string, onConfirm: () => void) {
+  const message = "Tap Save changes to update your public profile.";
+  if (Platform.OS === "web") {
+    if (typeof window !== "undefined" && window.confirm(`${title}\n\n${message}`)) onConfirm();
+    return;
+  }
+  Alert.alert(title, message, [
+    { text: "Cancel", style: "cancel" },
+    { text: "Remove", style: "destructive", onPress: onConfirm },
+  ]);
 }
 
 function guessMime(uri: string, fallback: string) {
@@ -415,48 +428,56 @@ export default function EditProfile() {
         </Pressable>
 
         <View style={styles.body}>
-          <View style={styles.heroRow}>
-            <Pressable onPress={() => pickImage("avatar")} style={styles.avatarWrap} testID="edit-avatar-picker">
-              <Avatar
-                uri={avatarSrc}
-                name={fullName || "?"}
-                size={88}
-                style={{ borderWidth: 4, borderColor: colors.surface }}
-              />
-              <View style={[styles.avatarCam, { backgroundColor: colors.brandPrimary, borderColor: colors.surface }]}>
-                {busy === "avatar" ? (
-                  <ActivityIndicator size="small" color={colors.onBrandPrimary} />
-                ) : (
-                  <Ionicons name="camera" size={14} color={colors.onBrandPrimary} />
-                )}
-              </View>
-            </Pressable>
-            <View style={{ flex: 1, gap: 6, paddingTop: 8 }}>
-              <AppText variant="title" numberOfLines={2}>
-                {fullName.trim() || "Your name"}
-              </AppText>
-              <AppText variant="body" muted numberOfLines={2}>
-                {headline.trim() || "Add a headline graduates will recognize"}
-              </AppText>
+          <Pressable
+            onPress={() => pickImage("avatar")}
+            style={[styles.avatarWrap, { marginTop: -44 }]}
+            testID="edit-avatar-picker"
+          >
+            <Avatar
+              uri={avatarSrc}
+              name={fullName || "?"}
+              size={88}
+              style={{ borderWidth: 4, borderColor: colors.surfaceSecondary }}
+            />
+            <View style={[styles.avatarCam, { backgroundColor: colors.brandPrimary, borderColor: colors.surfaceSecondary }]}>
+              {busy === "avatar" ? (
+                <ActivityIndicator size="small" color={colors.onBrandPrimary} />
+              ) : (
+                <Ionicons name="camera" size={14} color={colors.onBrandPrimary} />
+              )}
             </View>
+          </Pressable>
+          <View style={styles.identity}>
+            <AppText variant="title" numberOfLines={2}>
+              {fullName.trim() || "Your name"}
+            </AppText>
+            <AppText variant="body" muted numberOfLines={3} style={{ marginTop: 4, lineHeight: 22 }}>
+              {headline.trim() || "Add a headline graduates will recognize"}
+            </AppText>
           </View>
 
-          <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
-            {cover ? (
-              <Pressable onPress={() => setCover(undefined)} testID="edit-remove-cover">
-                <AppText variant="caption" weight="medium" color={colors.error}>
-                  Remove cover
-                </AppText>
-              </Pressable>
-            ) : null}
-            {avatar ? (
-              <Pressable onPress={() => setAvatar(undefined)} testID="edit-remove-avatar">
-                <AppText variant="caption" weight="medium" color={colors.error}>
-                  Remove photo
-                </AppText>
-              </Pressable>
-            ) : null}
-          </View>
+          {(cover || avatar) && (
+            <View style={styles.removeRow}>
+              {cover ? (
+                <RemoveAssetButton
+                  label="Remove cover"
+                  disabled={isBusy}
+                  testID="edit-remove-cover"
+                  style={{ flex: 1 }}
+                  onPress={() => confirmRemove("Remove cover image?", () => setCover(undefined))}
+                />
+              ) : null}
+              {avatar ? (
+                <RemoveAssetButton
+                  label="Remove photo"
+                  disabled={isBusy}
+                  testID="edit-remove-avatar"
+                  style={{ flex: 1 }}
+                  onPress={() => confirmRemove("Remove profile photo?", () => setAvatar(undefined))}
+                />
+              ) : null}
+            </View>
+          )}
 
           <EditProfileSection title="Basics" subtitle="How you appear on your public graduate profile." style={{ marginTop: 20 }}>
             <Input
@@ -608,19 +629,19 @@ export default function EditProfile() {
               <Ionicons name="cloud-upload-outline" size={20} color={colors.onSurfaceSecondary} />
             </Pressable>
             {hasResume ? (
-              <Pressable
-                onPress={() => {
-                  setResumeName("");
-                  setCvUrl("");
-                  setCvPublicId(undefined);
-                  setClearCv(true);
-                }}
+              <RemoveAssetButton
+                label="Remove resume"
+                disabled={isBusy}
                 testID="edit-remove-resume"
-              >
-                <AppText variant="caption" weight="medium" color={colors.error}>
-                  Remove resume
-                </AppText>
-              </Pressable>
+                onPress={() =>
+                  confirmRemove("Remove resume file?", () => {
+                    setResumeName("");
+                    setCvUrl("");
+                    setCvPublicId(undefined);
+                    setClearCv(true);
+                  })
+                }
+              />
             ) : null}
           </EditProfileSection>
 
@@ -681,9 +702,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(10, 19, 48, 0.35)",
   },
-  body: { paddingHorizontal: 16, marginTop: -40, gap: 16 },
-  heroRow: { flexDirection: "row", gap: 14, alignItems: "flex-start" },
+  body: { paddingHorizontal: 16, gap: 16 },
   avatarWrap: { alignSelf: "flex-start" },
+  identity: { paddingTop: 4, paddingBottom: 4 },
+  removeRow: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 4 },
   avatarCam: {
     position: "absolute",
     right: 0,
