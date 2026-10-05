@@ -74,26 +74,24 @@ If email toast says it is not configured, add `RESEND_API_KEY` and `EMAIL_FROM` 
 ## VPS layout after clone
 
 ```
-/opt/profolio/
+/opt/profolio/            ← clone BBD-dev/Profolio-Project here
 ├── docker-compose.yml    ← from server/deploy/docker-compose.yml
 ├── api.env               ← secrets, not in git
-├── server/               ← profolio-server
-├── front/                ← profolio-website
-└── app/                  ← profolio-app
+├── server/
+├── front/
+└── app/
 ```
 
 ---
 
 ## Deploy / update on the VPS
 
-Push the three repos from your PC, then on the VPS:
+Push **Profolio-Project** from your PC, then on the VPS:
 
 ```bash
-# First time only: clone + copy compose (see older steps if the folder is empty)
+# First time only: git clone https://github.com/BBD-dev/Profolio-Project.git /opt/profolio
 
-cd /opt/profolio/server && git pull
-cd /opt/profolio/front && git pull
-cd /opt/profolio/app && git pull
+cd /opt/profolio && git pull
 
 cd /opt/profolio
 cp server/deploy/docker-compose.yml .

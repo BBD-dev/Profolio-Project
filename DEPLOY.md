@@ -50,8 +50,7 @@ docker compose version
 mkdir -p /opt/profolio
 cd /opt/profolio
 
-git clone https://github.com/hussein-mo7/profolio-server.git server
-git clone https://github.com/hussein-mo7/profolio-website.git front
+git clone https://github.com/BBD-dev/Profolio-Project.git .
 ```
 
 Copy `docker-compose.yml` and env template (from your local monorepo, or create manually):
@@ -169,8 +168,9 @@ cd /opt/profolio && docker compose up -d --build
 /opt/profolio/
 ├── docker-compose.yml
 ├── .env
-├── server/          ← profolio-server repo
-└── front/           ← profolio-website repo
+├── server/          ← API (monorepo)
+├── front/           ← dashboard (monorepo)
+└── app/             ← mobile (monorepo; optional on VPS)
 ```
 
 Docker volume `mongo_data` holds your database files (persists across restarts).
