@@ -166,10 +166,8 @@ docker compose logs -f web
 # Stop
 docker compose down
 
-# Update code
-cd /opt/profolio/server && git pull
-cd /opt/profolio/front && git pull
-cd /opt/profolio && docker compose up -d --build
+# Update code (monorepo)
+cd /opt/profolio && git pull && docker compose up -d --build
 ```
 
 ---

@@ -30,4 +30,4 @@ cd front && cp .env.example .env && npm install && npm run dev
 
 Requires MongoDB running locally (or Atlas connection string in server `.env`).
 
-**VPS (API + dashboard):** see [DEPLOY.md](./DEPLOY.md). Use `docker compose up -d --build`. Add `--profile app-test` to include the mobile web build on port 8080 for QA only.
+**VPS (API + dashboard + local MongoDB):** follow [VPS_DEPLOY_CHECKLIST.md](./VPS_DEPLOY_CHECKLIST.md) step by step. See also [DEPLOY.md](./DEPLOY.md).
